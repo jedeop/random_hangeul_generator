@@ -1,35 +1,39 @@
 <template>
   <h1>무작위 한글 생성기</h1>
   <div class="inputs">
-    <div class="input-div">
-      <label for="length">길이</label>
-      <input type="number" name="length" id="length" v-model="state.length" placeholder="10" step="1">
-    </div>
+    <InputNumber id="length" label="길이" placeholder="10" @input-val="val => state.length = val" :value="state.length" />
+    <InputCheckbox id="_jongsung" label="종성 없이 생성" @input-val="val => state.removeJongsung = val" :value="state.removeJongsung" />
 
-    <div class="input-div">
-      <label for="jongsung">종성 없이</label>
-      <input type="checkbox" name="jongsung" id="jongsung" v-model="state.removeJongsung">
-      <label for="jongsung" id="jongsung_checkbox"></label>
-    </div>
-
-    <input type="button" name="generate" value="생성하기" @click="generate">
+    <input type="button" value="생성하기" @click="generate">
   </div>
-  <div class="result">
-    {{ state.result }}
+  <div v-show="state.result">
+    <div class="hr"></div>
+    <input type="button" value="복사하기" :data-clipboard-text="state.result" id="copy-btn">
+    <div id="result">
+      {{ state.result }}
+    </div>
   </div>
 </template>
 
 <script>
   import { reactive } from 'vue';
+  import InputNumber from './components/InputNumber.vue'
+  import InputCheckbox from './components/InputCheckbox.vue'
 
   export default {
     name: 'App',
-
+    components: {
+      InputNumber,
+      InputCheckbox
+    },
+    mounted() {
+      new ClipboardJS('#copy-btn')
+    },
     setup() {
       const state = reactive({
         length: 10,
         removeJongsung: false,
-        result: ''
+        result: null
       })
 
       function generate() {
@@ -61,9 +65,11 @@
     font-size: 25px;
     margin: 10px;
   }
+
   h1 {
     font-size: 2em;
   }
+
   input {
     border: none;
     background-color: hsl(0, 0%, 90%);
@@ -77,24 +83,28 @@
     align-items: center;
     justify-content: center;
   }
-  input[type="checkbox"] {
-    display: none;
-  }
+
   input[type="button"] {
     padding-left: 10px;
     padding-right: 10px;
   }
-  #jongsung_checkbox {
-    width: 1em;
-    height: 1em;
+  input[type="button"]:active {
     background-color: hsl(0, 0%, 80%);
-    box-shadow: inset 0px 0 3px 0px gray;
-    border-radius: 50%;
   }
-  #jongsung:checked + #jongsung_checkbox {
-    background-color: hsl(0, 0%, 20%);
+
+  #result {
+    display: inline-block;
+    padding: 10px;
+    background-color: hsl(0, 0%, 95%);
+    color: gray;
   }
-  #length {
-    width: 150px;
+  #copy-btn {
+    display: block;
+    margin: 10px auto;
+  }
+  .hr {
+    margin: 30px auto;
+    border-bottom: 2px hsl(0, 0%, 70%) dashed;
+    width: 30%;
   }
 </style>
