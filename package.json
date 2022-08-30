@@ -10,6 +10,6 @@
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.5",
-    "vite": "^0.20.10"
+    "vite": "^2.9.13"
   }
 }
